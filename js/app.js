@@ -11,7 +11,7 @@ function newGame(){
     var inst = canvasGB.getContext("2d");
     inst.font = "25px Galaxy Monkey";
     inst.fillStyle = "white";
-    inst.fillText("Play to Five", 350, 575);
+    inst.fillText("Play to Three", 350, 575);
 
 }
 
@@ -128,7 +128,8 @@ function plyr1Choice(choice1){
     var dw = 0;
     var dh = 0;
     var dx = 0;
-    var dy = 0
+    var dy = 0;
+    playSound("revealCPUChoice");
     var id = setInterval(frame, 5);
     function frame(){
         if(dw == 150){
@@ -164,24 +165,27 @@ function getWinner(choice1, cpuChoice){
             index2 = i;
         }
     }//end for loop
-
+    var soundClip;
     console.log("index1 = " + index1);
     console.log("index2 = " + index2);
     var modalText = document.getElementById("modalText");
     var modalMsg;
     if(index1 == index2){
         modalMsg = "It's a Tie!!";
+        soundClip = "ding";
     }else if((index1 + 1) == index2 || (index1 + 2) == index2 ||
         (index1 - 4) == index2 || (index1 - 3) == index2){
         //player1 wins
         modalMsg = "** " + choice1 + " beats " + cpuChoice + " **" +
             " Player 1 Wins!!";
             score1++;
+            soundClip = "speechWin";
     }else{
         //cpu wins
         modalMsg = "XX " + cpuChoice + " beats " + choice1 + "  XX" +
             " CPU Wins";
-        scoreCPU++
+        scoreCPU++;
+        soundClip = "speechLose";
     }
     document.getElementById("modalText").style.font = "40px Galaxy Monkey";
     modalText.innerHTML = modalMsg;
@@ -190,6 +194,7 @@ function getWinner(choice1, cpuChoice){
     setTimeout(showModal, 2000);
     function showModal(){
         modal.style.display = "block";
+        playSound(soundClip);
     }
     span.onclick = function() {
         modal.style.display = "none";
@@ -205,28 +210,36 @@ function endOfTurn() {
     var modalText = document.getElementById("modalText");
     var modalMsg;
     modalText.style.font = "40px Galaxy Monkey";
-    if (score1 == 5) {
+    if (score1 == 3) {
         modalMsg = "Congratulations!! You Win!!";
-    }else if (scoreCPU == 5) {
+        playSound("crowd")
+    }else if (scoreCPU == 3) {
         modalMsg = "Sorry you lose!!";
+        playSound("lose");
     }else{
+        playSound("introTheme");
         setup();
         return;
     }
     modalText.innerHTML = modalMsg;
     var modal = document.getElementById("whoWon");
     var span = document.getElementsByClassName("close")[0];
+
     setTimeout(showModal, 2000);
     function showModal() {
+        console.log("function end of Turn showModal win or lose");
         modal.style.display = "block";
     }
 
     span.onclick = function () {
+
         modal.style.display = "none";
         score1 = 0;
         scoreCPU = 0;
+        playSound("happyTheme");
         setup();
     }
+
 
 }
 

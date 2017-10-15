@@ -75,6 +75,9 @@ function handleFileLoad(event){
 }
 
 function playSound(target){
+    if(soundInstance.muted == null){
+        soundInstance = createjs.sound.play(target);
+    }
     if(soundInstance.muted){
         soundInstance = createjs.Sound.stop();
         soundInstance = createjs.Sound.play(target);
